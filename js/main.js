@@ -94,3 +94,42 @@
     
 })(jQuery);
 
+document.querySelectorAll('.navbar .dropdown').forEach(function(drop){
+  drop.addEventListener('mouseenter', function(){
+    const toggle = drop.querySelector('[data-bs-toggle="dropdown"]');
+    if (toggle) {
+      const instance = bootstrap.Dropdown.getOrCreateInstance(toggle);
+      instance.show();
+    }
+  });
+  drop.addEventListener('mouseleave', function(){
+    const toggle = drop.querySelector('[data-bs-toggle="dropdown"]');
+    if (toggle) {
+      const instance = bootstrap.Dropdown.getOrCreateInstance(toggle);
+      instance.hide();
+    }
+  });
+});
+
+// Asegurar toggle por click en mobile/tablet
+document.addEventListener('click', function (e) {
+  const toggle = e.target.closest('.navbar .dropdown-toggle');
+  if (!toggle) return;
+  e.preventDefault(); // evita navegar a "#" del padre
+  const dd = bootstrap.Dropdown.getOrCreateInstance(toggle);
+  dd.toggle();
+});
+
+// (opcional) abrir por hover en desktop (>=992px)
+document.querySelectorAll('.navbar .dropdown').forEach(function (drop) {
+  drop.addEventListener('mouseenter', function () {
+    if (window.innerWidth < 992) return;
+    const toggle = drop.querySelector('.dropdown-toggle');
+    if (toggle) bootstrap.Dropdown.getOrCreateInstance(toggle).show();
+  });
+  drop.addEventListener('mouseleave', function () {
+    if (window.innerWidth < 992) return;
+    const toggle = drop.querySelector('.dropdown-toggle');
+    if (toggle) bootstrap.Dropdown.getOrCreateInstance(toggle).hide();
+  });
+});
