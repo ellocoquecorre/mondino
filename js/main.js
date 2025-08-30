@@ -1,135 +1,128 @@
 (function ($) {
-    "use strict";
+  "use strict";
 
-    // Sticky Navbar
-    $(window).scroll(function () {
-        if ($(this).scrollTop() > 40) {
-            $('.navbar').addClass('sticky-top');
-        } else {
-            $('.navbar').removeClass('sticky-top');
-        }
-    });
-    
-    // Dropdown on mouse hover
-    $(document).ready(function () {
-        function toggleNavbarMethod() {
-            if ($(window).width() > 992) {
-                $('.navbar .dropdown').on('mouseover', function () {
-                    $('.dropdown-toggle', this).trigger('click');
-                }).on('mouseout', function () {
-                    $('.dropdown-toggle', this).trigger('click').blur();
-                });
-            } else {
-                $('.navbar .dropdown').off('mouseover').off('mouseout');
-            }
-        }
-        toggleNavbarMethod();
-        $(window).resize(toggleNavbarMethod);
-    });
-    
-    
-    // Back to top button
-    $(window).scroll(function () {
-        if ($(this).scrollTop() > 100) {
-            $('.back-to-top').fadeIn('slow');
-        } else {
-            $('.back-to-top').fadeOut('slow');
-        }
-    });
-    $('.back-to-top').click(function () {
-        $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
-        return false;
-    });
+  /* =========================
+   * Sticky Navbar
+   * ========================= */
+  $(window).on("scroll", function () {
+    if ($(this).scrollTop() > 40) {
+      $(".navbar").addClass("sticky-top");
+    } else {
+      $(".navbar").removeClass("sticky-top");
+    }
+  });
 
+  /* =========================
+   * Back to top button
+   * ========================= */
+  $(window).on("scroll", function () {
+    if ($(this).scrollTop() > 100) {
+      $(".back-to-top").fadeIn("slow");
+    } else {
+      $(".back-to-top").fadeOut("slow");
+    }
+  });
+  $(".back-to-top").on("click", function () {
+    $("html, body").animate({ scrollTop: 0 }, 1500, "easeInOutExpo");
+    return false;
+  });
 
-    // Facts counter
-    $('[data-toggle="counter-up"]').counterUp({
-        delay: 10,
-        time: 2000
-    });
+  /* =========================
+   * Facts counter (counterUp)
+   * ========================= */
+  if ($.fn.counterUp) {
+    $('[data-toggle="counter-up"]').counterUp({ delay: 10, time: 2000 });
+  }
 
-
-    // Product carousel
+  /* =========================
+   * Owl Carousels
+   * ========================= */
+  if ($.fn.owlCarousel) {
     $(".product-carousel").owlCarousel({
-        autoplay: true,
-        smartSpeed: 1000,
-        margin: 45,
-        dots: false,
-        loop: true,
-        nav : true,
-        navText : [
-            '<i class="bi bi-arrow-left"></i>',
-            '<i class="bi bi-arrow-right"></i>'
-        ],
-        responsive: {
-            0:{
-                items:1
-            },
-            768:{
-                items:2
-            },
-            992:{
-                items:3
-            },
-            1200:{
-                items:4
-            }
-        }
+      autoplay: true,
+      smartSpeed: 1000,
+      margin: 45,
+      dots: false,
+      loop: true,
+      nav: true,
+      navText: ['<i class="bi bi-arrow-left"></i>', '<i class="bi bi-arrow-right"></i>'],
+      responsive: { 0:{items:1}, 768:{items:2}, 992:{items:3}, 1200:{items:4} },
     });
 
-
-    // Testimonials carousel
     $(".testimonial-carousel").owlCarousel({
-        autoplay: true,
-        smartSpeed: 1000,
-        items: 1,
-        dots: false,
-        loop: true,
-        nav : true,
-        navText : [
-            '<i class="bi bi-arrow-left"></i>',
-            '<i class="bi bi-arrow-right"></i>'
-        ],
+      autoplay: true,
+      smartSpeed: 1000,
+      items: 1,
+      dots: false,
+      loop: true,
+      nav: true,
+      navText: ['<i class="bi bi-arrow-left"></i>', '<i class="bi bi-arrow-right"></i>'],
     });
-    
+  }
+
 })(jQuery);
 
-document.querySelectorAll('.navbar .dropdown').forEach(function(drop){
-  drop.addEventListener('mouseenter', function(){
-    const toggle = drop.querySelector('[data-bs-toggle="dropdown"]');
-    if (toggle) {
-      const instance = bootstrap.Dropdown.getOrCreateInstance(toggle);
-      instance.show();
-    }
-  });
-  drop.addEventListener('mouseleave', function(){
-    const toggle = drop.querySelector('[data-bs-toggle="dropdown"]');
-    if (toggle) {
-      const instance = bootstrap.Dropdown.getOrCreateInstance(toggle);
-      instance.hide();
-    }
-  });
-});
+/* ======================================================================
+ * Dropdown Navbar (robusto: funciona con y sin Bootstrap JS)
+ * - Click SIEMPRE abre/cierra (Chrome, Firefox, y Firefox RDM)
+ * - Si Bootstrap está, usa su API; si no, fallback manual con .show
+ * ====================================================================== */
+(function () {
+  var hasBs = !!(window.bootstrap && bootstrap.Dropdown);
 
-// Asegurar toggle por click en mobile/tablet
-document.addEventListener('click', function (e) {
-  const toggle = e.target.closest('.navbar .dropdown-toggle');
-  if (!toggle) return;
-  e.preventDefault(); // evita navegar a "#" del padre
-  const dd = bootstrap.Dropdown.getOrCreateInstance(toggle);
-  dd.toggle();
-});
+  function hideAll() {
+    document.querySelectorAll(".navbar .dropdown").forEach(function (li) {
+      var toggle = li.querySelector(".dropdown-toggle");
+      var menu   = li.querySelector(".dropdown-menu");
+      if (!menu) return;
+      if (hasBs && toggle) {
+        try { bootstrap.Dropdown.getOrCreateInstance(toggle).hide(); } catch(e){}
+      }
+      menu.classList.remove("show");
+      if (toggle) toggle.setAttribute("aria-expanded", "false");
+    });
+  }
 
-// (opcional) abrir por hover en desktop (>=992px)
-document.querySelectorAll('.navbar .dropdown').forEach(function (drop) {
-  drop.addEventListener('mouseenter', function () {
-    if (window.innerWidth < 992) return;
-    const toggle = drop.querySelector('.dropdown-toggle');
-    if (toggle) bootstrap.Dropdown.getOrCreateInstance(toggle).show();
+  function toggleDropdown(toggleEl) {
+    var li   = toggleEl.closest(".dropdown");
+    var menu = li ? li.querySelector(".dropdown-menu") : null;
+    if (!menu) return;
+
+    if (hasBs) {
+      try {
+        var dd = bootstrap.Dropdown.getOrCreateInstance(toggleEl, { autoClose: "outside" });
+        dd.toggle();
+        return;
+      } catch (e) {}
+    }
+
+    var isOpen = menu.classList.contains("show");
+    hideAll();
+    if (!isOpen) {
+      menu.classList.add("show");
+      toggleEl.setAttribute("aria-expanded", "true");
+    }
+  }
+
+  // Click en el padre SIEMPRE togglea
+  document.addEventListener("click", function (e) {
+    var toggle = e.target.closest(".navbar .dropdown-toggle");
+    if (!toggle) return;
+    e.preventDefault();
+    e.stopPropagation();
+    toggleDropdown(toggle);
   });
-  drop.addEventListener('mouseleave', function () {
-    if (window.innerWidth < 992) return;
-    const toggle = drop.querySelector('.dropdown-toggle');
-    if (toggle) bootstrap.Dropdown.getOrCreateInstance(toggle).hide();
+
+  // Cerrar al click fuera
+  document.addEventListener("click", function (e) {
+    if (e.target.closest(".navbar")) return;
+    hideAll();
   });
-});
+
+  // Cerrar al redimensionar
+  var rt;
+  window.addEventListener("resize", function () {
+    clearTimeout(rt);
+    rt = setTimeout(hideAll, 150);
+  });
+})();

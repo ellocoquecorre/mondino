@@ -32,6 +32,7 @@
                             <p class="text-white mb-0">+54 3583 49-9144</p>
                         </div>
                     </div>
+
                     <!-- 2 -->
                     <div class="col-lg-3 col-md-12 pt-0 pt-lg-5 mb-5">
                         <h4 class="text-white mb-4">Links</h4>
@@ -53,6 +54,7 @@
                             </a>
                         </div>
                     </div>
+
                     <!-- 3 -->
                     <div class="col-lg-3 col-md-12 pt-0 pt-lg-5 mb-5">
                         <h4 class="text-white mb-4">Servicios</h4>
@@ -71,11 +73,15 @@
                             </a>
                         </div>
                     </div>
+
                     <!-- 4 -->
                     <div class="col-lg-3 col-md-12 pt-0 pt-lg-5 mb-5">
                         <h4 class="text-white mb-4">Seguinos en</h4>
                         <div class="d-flex flex-column justify-content-start">
-                            <a class="btn btn-secondary btn-square rounded-circle" href="https://www.instagram.com/alfredosmondino">
+                            <a class="btn btn-secondary btn-square rounded-circle"
+                                href="<?php echo esc_url('https://www.instagram.com/alfredosmondino'); ?>"
+                                target="_blank" rel="noopener"
+                                aria-label="Instagram">
                                 <i class="fab fa-instagram"></i>
                             </a>
                         </div>
@@ -93,12 +99,14 @@
             <a class="text-secondary fw-bold" href="<?php echo esc_url(home_url('/')); ?>">
                 <?php bloginfo('name'); ?>
             </a>.
-            All Rights Reserved. Designed by
+            <?php esc_html_e('All Rights Reserved.', 'mondino'); ?>
+            <?php esc_html_e('Designed by', 'mondino'); ?>
             <a class="text-secondary fw-bold" href="https://htmlcodex.com">HTML Codex</a>
         </p>
-        <br>
-        Distributed By:
-        <a class="text-secondary fw-bold" href="https://themewagon.com" target="_blank">ThemeWagon</a>
+        <p class="mb-0">
+            <?php esc_html_e('Distributed by:', 'mondino'); ?>
+            <a class="text-secondary fw-bold" href="https://themewagon.com" target="_blank" rel="noopener">ThemeWagon</a>
+        </p>
     </div>
 </div>
 <!-- FIN FOOTER -->

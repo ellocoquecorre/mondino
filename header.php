@@ -50,11 +50,10 @@
                 <div class="d-flex align-items-center justify-content-center">
                     <a href="<?php echo esc_url(home_url('/')); ?>" class="navbar-brand ms-lg-5">
                         <div class="d-flex align-items-center">
-                            <img src="<?php echo esc_url(get_template_directory_uri() . '/img/logo.png'); ?>" alt="Logo" style="height:60px" class="me-3">
+                            <img src="<?php echo esc_url(get_template_directory_uri() . '/img/logo.png'); ?>" alt="<?php bloginfo('name'); ?>" style="height:60px" class="me-3">
                             <div class="text-center lh-sm">
                                 <div class="fw-bold fs-4 text-dark"><?php bloginfo('name'); ?></div>
                                 <div class="fw-bold text-dark">Hacienda - Cereales</div>
-                                <!-- Nota: si usabas fs-7 y no existe, podés reemplazar por fs-6 o tu clase propia -->
                             </div>
                         </div>
                     </a>
@@ -79,13 +78,13 @@
     <nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm py-3 py-lg-0 px-3 px-lg-5">
         <!-- Logo versión móvil -->
         <a href="<?php echo esc_url(home_url('/')); ?>" class="navbar-brand d-flex d-lg-none">
-            <img src="<?php echo esc_url(get_template_directory_uri() . '/img/logo-m.png'); ?>" alt="Logo">
+            <img src="<?php echo esc_url(get_template_directory_uri() . '/img/logo-m.png'); ?>" alt="<?php bloginfo('name'); ?>">
         </a>
 
         <!-- Botón hamburguesa -->
         <button class="navbar-toggler" type="button"
             data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            aria-controls="navbarCollapse" aria-expanded="false" aria-label="<?php esc_attr_e('Toggle navigation', 'mondino'); ?>">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -95,10 +94,10 @@
             wp_nav_menu([
                 'theme_location' => 'menu-principal',
                 'depth'          => 2, // dropdowns de un nivel
-                'container'      => false, // ya usamos el div .collapse arriba
-                'menu_class'     => 'navbar-nav mx-auto py-0', // clases del <ul>
+                'container'      => false,
+                'menu_class'     => 'navbar-nav mx-auto py-0',
                 'fallback_cb'    => '__return_false',
-                'walker'         => new Bootstrap_5_WP_Nav_Menu_Walker(), // walker BS5 (padre no navega)
+                'walker'         => new Bootstrap_5_WP_Nav_Menu_Walker(),
             ]);
             ?>
         </div>

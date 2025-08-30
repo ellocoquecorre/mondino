@@ -48,11 +48,11 @@ if (! class_exists('Bootstrap_5_WP_Nav_Menu_Walker')) :
         {
             $this->current_item = $item;
 
-            $indent      = ($depth) ? str_repeat("\t", $depth) : '';
-            $classes     = empty($item->classes) ? [] : (array) $item->classes;
+            $indent  = ($depth) ? str_repeat("\t", $depth) : '';
+            $classes = empty($item->classes) ? [] : (array) $item->classes;
 
-            // WP setea has_children en $args
-            $has_children = ! empty($args) && ! empty($args->has_children);
+            // ✅ WordPress expone has_children en $args->walker->has_children
+            $has_children = (! empty($args) && isset($args->walker) && ! empty($args->walker->has_children));
 
             if ($has_children) {
                 $classes[] = 'dropdown';
@@ -62,6 +62,7 @@ if (! class_exists('Bootstrap_5_WP_Nav_Menu_Walker')) :
 
             // NUNCA agregar 'dropdown-menu' al <li>; eso va en <ul> (start_lvl)
 
+            // Permitir filtro estándar de WP
             $class_names = join(' ', apply_filters('nav_menu_css_class', array_filter($classes), $item, $args, $depth));
             $class_names = $class_names ? ' class="' . esc_attr($class_names) . '"' : '';
 
@@ -88,6 +89,7 @@ if (! class_exists('Bootstrap_5_WP_Nav_Menu_Walker')) :
                 // Toggle correcto Bootstrap 5 + que NO navegue
                 $atts['class']           = $nav_link_class . $active_class . ' dropdown-toggle';
                 $atts['data-bs-toggle']  = 'dropdown';
+                $atts['data-bs-auto-close'] = 'outside';
                 $atts['aria-expanded']   = 'false';
                 $atts['role']            = 'button';
                 $atts['id']              = 'menu-item-dropdown-' . $item->ID;
@@ -96,6 +98,10 @@ if (! class_exists('Bootstrap_5_WP_Nav_Menu_Walker')) :
                 $atts['class'] = $nav_link_class . $active_class;
             }
 
+            // ✅ MUY IMPORTANTE: aplicar filtro para que functions.php pueda modificar atributos
+            $atts = apply_filters('nav_menu_link_attributes', $atts, $item, $args, $depth);
+
+            // Construir string de atributos
             $attributes = '';
             foreach ($atts as $attr => $value) {
                 if (! empty($value)) {

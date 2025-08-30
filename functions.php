@@ -10,6 +10,7 @@ function mondino_setup()
     add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
     add_theme_support('html5', ['search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script']);
+    add_theme_support('align-wide'); // bloques Ancho amplio / Ancho completo
 
     // Registrar ubicación de menú
     register_nav_menus([
@@ -125,11 +126,11 @@ function mondino_enqueue_assets()
         true
     );
 
-    // Si main.js usa owl/easing, los declaramos como dependencias
+    // main.js depende del bundle de Bootstrap para tener la API disponible
     wp_enqueue_script(
         'mondino-main',
         get_template_directory_uri() . '/js/main.js',
-        ['jquery', 'mondino-owlcarousel', 'mondino-easing'],
+        ['jquery', 'mondino-owlcarousel', 'mondino-easing', 'mondino-bootstrap-bundle'],
         mondino_asset_ver('/js/main.js'),
         true
     );
@@ -232,7 +233,7 @@ add_filter('nav_menu_css_class', function ($classes, $item, $args, $depth) {
     return $classes;
 }, 10, 4);
 
-// <a> atributos
+// <a> atributos base (dropdown y toggle en nivel 0 con hijos)
 add_filter('nav_menu_link_attributes', function ($atts, $item, $args, $depth) {
     if (isset($args->theme_location) && $args->theme_location === 'menu-principal') {
         $atts['class'] = ($depth > 0) ? 'dropdown-item' : 'nav-link';
@@ -240,19 +241,36 @@ add_filter('nav_menu_link_attributes', function ($atts, $item, $args, $depth) {
         if (in_array('menu-item-has-children', (array)$item->classes, true) && $depth === 0) {
             $atts['class'] .= ' dropdown-toggle';
             $atts['data-bs-toggle'] = 'dropdown';
+            $atts['data-bs-auto-close'] = 'outside';
             $atts['aria-expanded'] = 'false';
             $atts['role'] = 'button';
-            // Si querés que el padre NO navegue:
+            // Padre NO navega:
             $atts['href'] = '#';
         }
     }
     return $atts;
 }, 10, 4);
 
+// <a> marcar 'active' cuando corresponda (se aplica luego del filtro anterior)
+add_filter('nav_menu_link_attributes', function ($atts, $item, $args, $depth) {
+    if (isset($args->theme_location) && $args->theme_location === 'menu-principal') {
+        $classes_attr = isset($atts['class']) ? $atts['class'] : '';
+        if (
+            in_array('current-menu-item', (array)$item->classes, true) ||
+            in_array('current-menu-ancestor', (array)$item->classes, true) ||
+            in_array('current_page_item', (array)$item->classes, true) ||
+            in_array('current_page_ancestor', (array)$item->classes, true)
+        ) {
+            $classes_attr .= ' active';
+        }
+        $atts['class'] = trim($classes_attr);
+    }
+    return $atts;
+}, 20, 4);
+
 // <ul> del submenú
 add_filter('nav_menu_submenu_css_class', function ($classes, $args, $depth) {
     if (isset($args->theme_location) && $args->theme_location === 'menu-principal') {
-        // Reemplaza 'sub-menu' por clases de Bootstrap
         $classes = array_diff($classes, ['sub-menu']);
         $classes[] = 'dropdown-menu';
     }
