@@ -209,7 +209,7 @@
 .dropdown-menu {
   position: absolute;
   z-index: 1000;
-  display: none;       /* BS5 la muestra con .show */
+  display: none;
   min-width: 10rem;
   padding: .5rem 0;
   margin: 0;
@@ -297,7 +297,6 @@ h1.wp-block-post-title,
 
 /* ===========================
    🔧 Mejores micro-interacciones
-   (no cambia colores)
    =========================== */
 
 /* Navbar más prolija y caret animado */
@@ -362,19 +361,33 @@ h1.wp-block-post-title,
   box-shadow: 0 12px 28px rgba(0,0,0,.12);
 }
 
-/* Footer: subrayado animado consistente */
+/* =======================
+   Footer: underline SOLO en .lf
+   ======================= */
 .bg-footer a {
   text-decoration: none;
+}
+
+.bg-footer a .lf {
   position: relative;
+  color: #FFFFFF;
+  text-decoration: none;
 }
-.bg-footer a::after {
-  content:"";
-  position:absolute; left:0; bottom:-2px;
-  width:0; height:2px;
+
+.bg-footer a .lf::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
   background: currentColor;
-  transition: width .25s ease;
+  transition: width 0.4s ease-out 0.05s;
 }
-.bg-footer a:hover::after { width:100%; }
+
+.bg-footer a .lf:hover::after {
+  width: 100%;
+}
 
 /* Tipografía: micro-ajustes */
 h1, .display-1, .display-2, .display-3 { letter-spacing: -0.02em; }
@@ -386,7 +399,7 @@ h1, .display-1, .display-2, .display-3 { letter-spacing: -0.02em; }
   .btn { padding: 0.625rem 1rem; }
 }
 
-/* Z-index seguro para navbar/dropdowns (evita que algo los tape) */
+/* Z-index seguro para navbar/dropdowns */
 .navbar { position: relative; z-index: 1030; }
 .sticky-top { z-index: 1020; }
 .dropdown-menu { z-index: 1060; }
@@ -394,9 +407,9 @@ h1, .display-1, .display-2, .display-3 { letter-spacing: -0.02em; }
 /* Controles del carrusel tipo “tarjetita” */
 #header-carousel .carousel-control-prev,
 #header-carousel .carousel-control-next{
-  width:auto;               /* que no ocupe 10% */
+  width:auto;
   height:auto;
-  opacity:1;                /* siempre visibles (podés bajar a .85 si querés) */
+  opacity:1;
 }
 
 #header-carousel .carousel-control-prev,
@@ -405,36 +418,31 @@ h1, .display-1, .display-2, .display-3 { letter-spacing: -0.02em; }
   transform: translateY(-50%);
 }
 
-#header-carousel .carousel-control-prev{
-  left:16px;
-}
-#header-carousel .carousel-control-next{
-  right:16px;
-}
+#header-carousel .carousel-control-prev{ left:16px; }
+#header-carousel .carousel-control-next{ right:16px; }
 
-/* Iconos dentro de un rectángulo oscuro */
 #header-carousel .carousel-control-prev-icon,
 #header-carousel .carousel-control-next-icon{
   width:48px;
   height:48px;
-  background-size: 60% 60%;             /* chevron un poco más chico */
-  background-color: rgba(38,58,79,.9);  /* var(--dark) con opacidad */
+  background-size: 60% 60%;
+  background-color: rgba(38,58,79,.9);
   border-radius: 6px;
   box-shadow: 0 2px 10px rgba(0,0,0,.25);
 }
 
-/* opcional: al pasar el mouse, un poco más claro */
 #header-carousel .carousel-control-prev:hover .carousel-control-prev-icon,
 #header-carousel .carousel-control-next:hover .carousel-control-next-icon{
   background-color: rgba(38,58,79,1);
 }
-/* Carousel optimizado para móviles (sin franjas) */
+
+/* Carousel optimizado para móviles */
 @media (max-width: 576px) {
   #header-carousel .carousel-item img {
     width: 100%;
-    height: 45vh;        /* bastante más bajo en móviles */
-    min-height: 220px;   /* asegura que no quede muy chato */
-    max-height: 230px;   /* límite razonable */
-    object-fit: cover;   /* llena ancho sin franjas */
+    height: 45vh;
+    min-height: 220px;
+    max-height: 230px;
+    object-fit: cover;
   }
 }
